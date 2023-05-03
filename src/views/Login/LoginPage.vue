@@ -1,9 +1,14 @@
 <script setup>
+import router from "@/router";
 import { ref } from "vue";
 
 const email = ref(null);
 const password = ref(null);
 const inputType = ref("password");
+
+function goTo() {
+  router.push("/home");
+}
 </script>
 
 <template>
@@ -45,7 +50,7 @@ const inputType = ref("password");
         />
       </slot>
     </v-text-field>
-    <v-btn> Entrar </v-btn>
+    <v-btn @click="goTo"> Entrar </v-btn>
   </div>
 </template>
 
