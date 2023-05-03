@@ -5,8 +5,14 @@ const props = defineProps({
 })
 
 function getIconColor (category) {
-  if(category === 'normal') return 'green'
-
+  switch (category) {
+    case 'classifield':  
+      return 'yellow'
+    case 'secret':
+      return 'red'
+    default:
+      return 'green'
+  }
 }
 const iconColor = computed(() => {
   return getIconColor(props.category)
