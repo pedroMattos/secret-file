@@ -6,17 +6,26 @@ import CategoryView from "../FileActions/CategoryView/CategoryView.vue";
 
 const name = ref(null);
 const content = ref(null);
+const password = ref(null);
 const items = ref([
   { title: "Normal", value: "normal" },
   { title: "Confidencial", value: "classifield" },
   { title: "Secreto", value: "secret" },
 ]);
+const category = ref('normal');
+
+const lockState = ref(false)
+function getLockState(value) {
+  lockState.value = value
+}
 </script>
 <template>
   <div class="form">
-    <lock-action />
-    <delete-action />
-    <category-view />
+    <div class="actions">
+      <lock-action @lock-unlock="getLockState" :allow-lock="category !== 'normal'" />
+      <category-view :category="category" />
+      <delete-action />
+    </div>
     <v-text-field
       v-model="name"
       autocomplete="off"
@@ -29,7 +38,19 @@ const items = ref([
       placeholder="Conteúdo"
       required
     ></v-textarea>
-    <v-select placeholder="Selecione a categoria" :items="items"></v-select>
+    <v-text-field
+      v-if="lockState"
+      v-model="password"
+      autocomplete="off"
+      type="password"
+      placeholder="Defina uma senha"
+      required
+    ></v-text-field>
+    <v-select
+      v-model="category"
+      placeholder="Selecione a categoria"
+      :items="items"
+    ></v-select>
 
     <div class="actions">
       <v-btn class="bg-red-darken-1"> Cancelar </v-btn>

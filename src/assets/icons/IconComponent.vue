@@ -21,6 +21,8 @@ defineProps({
 
 <style lang="scss" scoped>
 i {
+
+  color: v-bind(iconColor);
   &.huge {
     font-size: 24px;
   }
