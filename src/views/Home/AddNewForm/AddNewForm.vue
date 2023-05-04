@@ -1,7 +1,6 @@
 <script setup>
 import { ref, defineEmits } from "vue";
 import LockAction from "../FileActions/LockAction/LockAction.vue";
-import DeleteAction from "../FileActions/DeleteAction/DeleteAction.vue";
 import CategoryView from "../FileActions/CategoryView/CategoryView.vue";
 import * as file from "@/models/services/localFile";
 
@@ -31,7 +30,6 @@ function handleSave() {
     <div class="actions">
       <lock-action @lock-unlock="getLockState" :allow-lock="category !== 'normal'" />
       <category-view :category="category" />
-      <delete-action />
     </div>
     <v-text-field
       v-model="name"

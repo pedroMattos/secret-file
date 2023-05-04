@@ -2,7 +2,6 @@
 import { defineProps } from "vue";
 
 defineProps({
-  text: { type: [String, Number], required: true },
   textSize: { type: String, default: "12px" },
   textColor: { type: String, default: "black" },
   weight: { type: [String, Number], default: "400" },
