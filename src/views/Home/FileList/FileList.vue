@@ -42,17 +42,24 @@ function onDelete() {
 }
 
 function onShow(eventValue) {
-  hideData.value = eventValue
+  if (hideData.value !== eventValue) {
+    hideData.value = eventValue
+    return
+  }
+  hideData.value = null
 }
 
 function handleViewItem (id) {
-  console.log(id)
   if (showItemView.value !== id) {
     showItemView.value = id
     return
   }
 
   showItemView.value = null
+}
+
+function shouldHide (hideData, file) {
+  return hideData !== file.id && file.category !== 'normal'
 }
 </script>
 <template>
@@ -61,7 +68,7 @@ function handleViewItem (id) {
       <div class="file-info" @click="handleViewItem(file.id)">
         <div class="name-area">
           <s-text>
-            {{ file.name }}
+            {{ shouldHide(hideData, file) ? '********' : file.name }}
           </s-text>
         </div>
         <div class="date-area">
@@ -70,9 +77,9 @@ function handleViewItem (id) {
           </s-text>
         </div>
       </div>
-      <ShowHideAction @show="onShow" :hide="file.category !== 'normal'" />
+      <ShowHideAction @show="() => onShow(file.id)" :hide="shouldHide(hideData, file)" />
     </div>
-    <ItemView v-if="showItemView === file.id" @item-deleted="onDelete" :item-data="file" />
+    <ItemView v-if="showItemView === file.id" @item-deleted="onDelete" @cancel="handleViewItem(file.id)" :item-data="file" />
   </div>
 </template>
 
