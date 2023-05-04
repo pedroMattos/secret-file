@@ -73,7 +73,7 @@ function handleSave() {
   width: 100%;
   padding: 16px;
   margin-bottom: 8px;
-  border-right: 3px solid grey;
+  border-right: 6px solid grey;
 
   .actions {
     display: flex;
