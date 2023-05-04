@@ -28,7 +28,7 @@ function handleSave() {
 <template>
   <div class="form">
     <div class="actions">
-      <lock-action @lock-unlock="getLockState" :allow-lock="category !== 'normal'" />
+      <lock-action @lock-unlock="getLockState" :allow-lock="category !== 'normal'" :is-secret="category === 'secret'" />
       <category-view :category="category" />
     </div>
     <v-text-field

@@ -1,11 +1,23 @@
 <script setup>
-import { defineEmits, ref, defineProps } from 'vue';
+import { defineEmits, ref, defineProps, watch, computed } from 'vue';
 
 const props = defineProps({
-  allowLock: {type: Boolean, required: true}
+  allowLock: {type: Boolean, required: true},
+  isSecret: Boolean
+})
+const secret = computed(() =>{
+  return props.isSecret
 })
 const emit = defineEmits(['lockUnlock'])
 const state = ref('unlock')
+
+watch(secret, (value) => {
+  console.log({value})
+  if (value) {
+    state.value = 'lock'
+    emit('lockUnlock', true)
+  }
+})
 
 function toggleLock() {
   if (state.value === 'unlock') {
@@ -20,7 +32,7 @@ function toggleLock() {
 </script>
 <template>
   <div class="lock">
-    <v-btn :disabled="!props.allowLock" icon variant="text" @click="toggleLock">
+    <v-btn :disabled="!props.allowLock || isSecret" icon variant="text" @click="toggleLock">
       <s-icon :icon-name="state === 'unlock' ? 'lock-open' : 'lock'" />
     </v-btn>
   </div>
