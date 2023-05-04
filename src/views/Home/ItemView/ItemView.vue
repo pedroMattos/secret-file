@@ -1,18 +1,26 @@
 <script setup>
-import {defineProps, defineEmits} from 'vue'
+import {defineProps, defineEmits, ref} from 'vue'
 import DeleteAction from "../FileActions/DeleteAction/DeleteAction.vue";
+import UnlockForm from '../UnlockForm/UnlockForm.vue';
+const blockedByPass = ref(true)
 const emit = defineEmits(['itemDeleted'])
 const props = defineProps({
   itemData: {type: Object, required: true}
 })
 
+function onUnlockFile() {
+  blockedByPass.value = false
+}
 </script>
 <template>
   <div class="item">
-    <delete-action @delete="emit('itemDeleted')" :item-id="props.itemData.id" />
-    <s-text>
-      {{ props.itemData.content }}
-    </s-text>
+    <unlock-form @unlock-file="onUnlockFile" :pass="itemData.password" v-if="itemData.password && blockedByPass" />
+    <div v-else>
+      <delete-action @delete="emit('itemDeleted')" :item-id="props.itemData.id" />
+      <s-text>
+        {{ props.itemData.content }}
+      </s-text>
+    </div>
   </div>
 </template>
 

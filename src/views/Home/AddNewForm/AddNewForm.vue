@@ -5,9 +5,9 @@ import CategoryView from "../FileActions/CategoryView/CategoryView.vue";
 import * as file from "@/models/services/localFile";
 
 const emit = defineEmits(['cancel', 'save'])
-const name = ref(null);
+const fileName = ref(null);
 const content = ref(null);
-const password = ref(null);
+const filePass = ref(null);
 const items = ref([
   { title: "Normal", value: "normal" },
   { title: "Confidencial", value: "classifield" },
@@ -20,7 +20,7 @@ function getLockState(value) {
   lockState.value = value
 }
 function handleSave() {
-  file.add({ name: name.value, content: content.value, category: category.value })
+  file.add({ name: fileName.value, content: content.value, category: category.value, password: filePass.value })
   status.value = 'Adicionado com sucesso!'
   emit('save')
 }
@@ -32,8 +32,7 @@ function handleSave() {
       <category-view :category="category" />
     </div>
     <v-text-field
-      v-model="name"
-      autocomplete="off"
+      v-model="fileName"
       placeholder="Nome"
       required
     ></v-text-field>
@@ -45,9 +44,10 @@ function handleSave() {
     ></v-textarea>
     <v-text-field
       v-if="lockState"
-      v-model="password"
-      autocomplete="off"
+      v-model="filePass"
+      autocomplete="new-password"
       type="password"
+      name="file-password"
       placeholder="Defina uma senha"
       required
     ></v-text-field>

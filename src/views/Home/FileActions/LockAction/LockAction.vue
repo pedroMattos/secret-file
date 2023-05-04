@@ -12,11 +12,13 @@ const emit = defineEmits(['lockUnlock'])
 const state = ref('unlock')
 
 watch(secret, (value) => {
-  console.log({value})
   if (value) {
     state.value = 'lock'
     emit('lockUnlock', true)
+    return
   }
+  state.value = 'unlock'
+  emit('lockUnlock', false)
 })
 
 function toggleLock() {

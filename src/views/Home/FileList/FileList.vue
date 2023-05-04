@@ -56,9 +56,9 @@ function handleViewItem (id) {
 }
 </script>
 <template>
-  <div v-for="(file, index) in files" :key="index" :class="`list ${file.category}`" @click="handleViewItem(file.id)">
+  <div v-for="(file, index) in files" :key="index" :class="`list ${file.category}`">
     <div :class="`list-item-area ${file.category}`">
-      <div class="file-info">
+      <div class="file-info" @click="handleViewItem(file.id)">
         <div class="name-area">
           <s-text>
             {{ file.name }}
