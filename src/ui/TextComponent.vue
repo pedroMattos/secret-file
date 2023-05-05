@@ -11,7 +11,7 @@ defineProps({
 </script>
 
 <template>
-  <div>
+  <div :class="{ 'has-link': isLink }">
     <a :href="text" target="_blank" rel="noopener noreferrer" no v-if="isLink"><slot></slot></a>
     <p v-else><slot></slot></p>
 
@@ -24,5 +24,10 @@ p, a {
   font-size: v-bind(textSize);
   font-weight: v-bind(weight);
   margin: 0;
+}
+.has-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
