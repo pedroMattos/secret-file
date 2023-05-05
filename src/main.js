@@ -7,6 +7,7 @@ import "@/components/index";
 import IconComponent from "@/assets/icons/IconComponent.vue";
 import TextComponent from "@/ui/TextComponent";
 import { db } from "./Dexie";
+import '@/FirebaseSdk/index';
 
 import "vuetify/styles";
 import { createVuetify } from "vuetify";

@@ -1,74 +1,81 @@
 <script setup>
-import * as file from '@/models/services/localFile';
-import { ref, defineEmits, defineProps, watch, computed } from 'vue';
-import ShowHideAction from '../FileActions/ShowHideAction/ShowHideAction.vue';
-import ItemView from '../ItemView/ItemView.vue';
+import * as file from "@/models/services/localFile";
+import { ref, defineEmits, defineProps, watch, computed } from "vue";
+import ShowHideAction from "../FileActions/ShowHideAction/ShowHideAction.vue";
+import ItemView from "../ItemView/ItemView.vue";
+import checkIsValidUser from "@/composables/checkIsValidUser";
 
 const props = defineProps({
-  reFetch: Boolean
-})
+  reFetch: Boolean,
+});
 const shouldReFetch = computed(() => {
-  return props.reFetch
-})
-const emit = defineEmits(['loadFinish'])
-const files = ref(null)
-const hideData = ref(null)
-const showItemView = ref(null)
+  return props.reFetch;
+});
+const emit = defineEmits(["loadFinish"]);
+const files = ref(null);
+const hideData = ref(null);
+const showItemView = ref(null);
 
 file.getData().then((filesData) => {
-  files.value = filesData
-  emit('loadFinish', filesData.length)
-})
+  files.value = filesData;
+  emit("loadFinish", filesData.length);
+});
 
 watch(shouldReFetch, (value) => {
   if (value) {
     file.getData().then((filesData) => {
-      files.value = filesData
-      emit('loadFinish', filesData.length)
-    })
+      files.value = filesData;
+      emit("loadFinish", filesData.length);
+    });
   }
-})
+});
 
 function date(dateString) {
-  const date = dateString.split('-')
-  return `${date.at(1)}/${date.at(0)}`
+  const date = dateString.split("-");
+  return `${date.at(1)}/${date.at(0)}`;
 }
 
 function onDelete() {
   file.getData().then((filesData) => {
-    files.value = filesData
-    emit('loadFinish', filesData.length)
-  })
+    files.value = filesData;
+    emit("loadFinish", filesData.length);
+  });
 }
 
 function onShow(eventValue) {
   if (hideData.value !== eventValue) {
-    hideData.value = eventValue
-    return
+    hideData.value = eventValue;
+    return;
   }
-  hideData.value = null
+  hideData.value = null;
 }
 
-function handleViewItem (id) {
+async function handleViewItem(id) {
+  const isValid = await checkIsValidUser();
+  if (!isValid) return;
   if (showItemView.value !== id) {
-    showItemView.value = id
-    return
+    showItemView.value = id;
+    return;
   }
 
-  showItemView.value = null
+  showItemView.value = null;
 }
 
-function shouldHide (hideData, file) {
-  return hideData !== file.id && file.category !== 'normal'
+function shouldHide(hideData, file) {
+  return hideData !== file.id && file.category !== "normal";
 }
 </script>
 <template>
-  <div v-for="(file, index) in files" :key="index" :class="`list ${file.category}`">
+  <div
+    v-for="(file, index) in files"
+    :key="index"
+    :class="`list ${file.category}`"
+  >
     <div :class="`list-item-area ${file.category}`">
       <div class="file-info" @click="handleViewItem(file.id)">
         <div class="name-area">
           <s-text>
-            {{ shouldHide(hideData, file) ? '********' : file.name }}
+            {{ shouldHide(hideData, file) ? "********" : file.name }}
           </s-text>
         </div>
         <div class="date-area">
@@ -77,9 +84,17 @@ function shouldHide (hideData, file) {
           </s-text>
         </div>
       </div>
-      <ShowHideAction @show="() => onShow(file.id)" :hide="shouldHide(hideData, file)" />
+      <ShowHideAction
+        @show="() => onShow(file.id)"
+        :hide="shouldHide(hideData, file)"
+      />
     </div>
-    <ItemView v-if="showItemView === file.id" @item-deleted="onDelete" @cancel="handleViewItem(file.id)" :item-data="file" />
+    <ItemView
+      v-if="showItemView === file.id"
+      @item-deleted="onDelete"
+      @cancel="handleViewItem(file.id)"
+      :item-data="file"
+    />
   </div>
 </template>
 

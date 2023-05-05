@@ -1,13 +1,29 @@
 <script setup>
 import router from "@/router";
+import loginWithEmail from "@/models/services/loginWithEmail";
+import * as user from "@/models/services/localUserData";
 import { ref } from "vue";
 
 const email = ref(null);
 const password = ref(null);
 const inputType = ref("password");
+const errorMessage = ref(null);
 
 function goTo() {
-  router.push("/home");
+  loginWithEmail(email.value, password.value)
+    .then((userCredential) => {
+      const uid = userCredential.user.uid;
+      const email = userCredential.user.email;
+      const lastLogin = userCredential.user.metadata.lastLoginAt;
+      user
+        .saveUserData({ uuid: uid, email: email, lastLogin: lastLogin })
+        .then(() => {
+          router.push("/home");
+        });
+    })
+    .catch((error) => {
+      errorMessage.value = error;
+    });
 }
 </script>
 
@@ -50,6 +66,9 @@ function goTo() {
         />
       </slot>
     </v-text-field>
+    <s-text text-color="red">
+      {{ errorMessage }}
+    </s-text>
     <v-btn @click="goTo"> Entrar </v-btn>
   </div>
 </template>
