@@ -2,12 +2,24 @@
 import router from "@/router";
 import loginWithEmail from "@/models/services/loginWithEmail";
 import * as user from "@/models/services/localUserData";
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
+import checkIsValidUser from "@/composables/checkIsValidUser";
+
+onBeforeMount(() => {
+  sendToHome()
+});
 
 const email = ref(null);
 const password = ref(null);
 const inputType = ref("password");
 const errorMessage = ref(null);
+
+async function sendToHome() {
+  const isValid = await checkIsValidUser()
+  if (isValid) {
+    router.push('/home')
+  }
+}
 
 function goTo() {
   loginWithEmail(email.value, password.value)
