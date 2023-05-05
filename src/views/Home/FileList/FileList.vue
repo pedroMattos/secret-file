@@ -69,7 +69,7 @@ function shouldHide(hideData, file) {
   <div
     v-for="(file, index) in files"
     :key="index"
-    :class="`list ${file.category}`"
+    :class="`list ${file.category} ${file?.inCloud ? 'in-cloud' : ''}`"
   >
     <div :class="`list-item-area ${file.category}`">
       <div class="file-info" @click="handleViewItem(file.id)">
@@ -84,10 +84,13 @@ function shouldHide(hideData, file) {
           </s-text>
         </div>
       </div>
-      <ShowHideAction
-        @show="() => onShow(file.id)"
-        :hide="shouldHide(hideData, file)"
-      />
+      <div class="actions">
+        <s-icon v-if="file.inCloud" icon-color="rgb(49, 155, 209)" icon-name="cloud-arrow-up" />
+        <ShowHideAction
+          @show="() => onShow(file.id)"
+          :hide="shouldHide(hideData, file)"
+        />
+      </div>
     </div>
     <ItemView
       v-if="showItemView === file.id"
@@ -99,10 +102,20 @@ function shouldHide(hideData, file) {
 </template>
 
 <style lang="scss" scoped>
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 .list {
   background-color: white;
   margin-bottom: 8px;
   border-right: 6px solid grey;
+  &.in-cloud {
+    border-left: 1px solid rgb(49, 155, 209);
+    border-top: 1px solid rgb(49, 155, 209);
+    border-bottom: 1px solid rgb(49, 155, 209);
+  }
   &.normal {
     border-color: green;
   }
@@ -118,7 +131,7 @@ function shouldHide(hideData, file) {
   padding: 0 16px;
   display: flex;
   align-items: center;
-  max-height: 40px;
+  max-height: 48px;
   justify-content: space-between;
   .file-info {
     gap: 10px;
