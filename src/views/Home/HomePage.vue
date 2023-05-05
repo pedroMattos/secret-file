@@ -2,8 +2,11 @@
 import checkIsValidUser from "@/composables/checkIsValidUser";
 import AddNewForm from "./AddNewForm/AddNewForm.vue";
 import FileList from "./FileList/FileList.vue";
-import { ref } from "vue";
-checkIsValidUser();
+import { ref, onBeforeMount } from "vue";
+
+onBeforeMount(() => {
+  checkIsValidUser();
+});
 const hasFiles = ref(false);
 const shouldAdd = ref(false);
 const reFetch = ref(false);

@@ -22,16 +22,18 @@ function getLockState(value) {
 }
 async function handleSave() {
   const isValid = await checkIsValidUser();
-  if (isValid) {
-    file.add({
-      name: fileName.value,
-      content: content.value,
-      category: category.value,
-      password: filePass.value,
-    });
-    status.value = "Adicionado com sucesso!";
-    emit("save");
-  }
+  if (!isValid) return;
+  file.add({
+    name: fileName.value,
+    content: content.value,
+    category: category.value,
+    password: filePass.value,
+  });
+  status.value = "Adicionado com sucesso!";
+  emit("save");
+}
+function handleCancel() {
+  emit("cancel");
 }
 </script>
 <template>
@@ -44,32 +46,38 @@ async function handleSave() {
       />
       <category-view :category="category" />
     </div>
-    <v-text-field v-model="fileName" placeholder="Nome" required></v-text-field>
-    <v-textarea
-      v-model="content"
-      autocomplete="off"
-      placeholder="Conteúdo"
-      required
-    ></v-textarea>
-    <v-text-field
-      v-if="lockState"
-      v-model="filePass"
-      autocomplete="new-password"
-      type="password"
-      name="file-password"
-      placeholder="Defina uma senha"
-      required
-    ></v-text-field>
-    <v-select
-      v-model="category"
-      placeholder="Selecione a categoria"
-      :items="items"
-    ></v-select>
-    {{ status }}
-    <div class="actions">
-      <v-btn class="bg-red-darken-1" @click="emit('cancel')"> Cancelar </v-btn>
-      <v-btn class="bg-blue-lighten-1" @click="handleSave"> Salvar </v-btn>
-    </div>
+    <form @submit.prevent="handleSave">
+      <v-text-field
+        v-model="fileName"
+        placeholder="Nome"
+        required
+      ></v-text-field>
+      <v-textarea
+        v-model="content"
+        autocomplete="off"
+        placeholder="Conteúdo"
+        required
+      ></v-textarea>
+      <v-text-field
+        v-if="lockState"
+        v-model="filePass"
+        autocomplete="new-password"
+        type="password"
+        name="file-password"
+        placeholder="Defina uma senha"
+        :required="category === 'secret'"
+      ></v-text-field>
+      <v-select
+        v-model="category"
+        placeholder="Selecione a categoria"
+        :items="items"
+      ></v-select>
+      {{ status }}
+      <div class="actions">
+        <v-btn class="bg-red-darken-1" @click="handleCancel"> Cancelar </v-btn>
+        <v-btn class="bg-blue-lighten-1" type="submit"> Salvar </v-btn>
+      </div>
+    </form>
   </div>
 </template>
 
