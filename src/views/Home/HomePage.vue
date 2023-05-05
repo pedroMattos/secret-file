@@ -3,6 +3,8 @@ import checkIsValidUser from "@/composables/checkIsValidUser";
 import AddNewForm from "./AddNewForm/AddNewForm.vue";
 import FileList from "./FileList/FileList.vue";
 import { ref, onBeforeMount } from "vue";
+import logout from "@/models/services/logout";
+import router from "@/router";
 
 onBeforeMount(() => {
   checkIsValidUser();
@@ -32,6 +34,10 @@ async function handleAdd() {
     shouldAdd.value = true;
   }
 }
+async function handleLogout() {
+  await logout()
+  router.push('/')
+}
 </script>
 <template>
   <div class="home">
@@ -44,10 +50,16 @@ async function handleAdd() {
       <FileList @load-finish="onLoadFinish" :re-fetch="reFetch" />
       <v-btn block @click="handleAdd"> Adicionar </v-btn>
     </div>
+    <v-btn icon class="bg-red-darken-1 logout" @click="handleLogout"> <s-icon icon-name="arrow-right-from-bracket" /> </v-btn>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.logout {
+  position: absolute;
+  bottom: 5px;
+    right: 16px;
+}
 .files-area {
   position: absolute;
   top: 60px;
