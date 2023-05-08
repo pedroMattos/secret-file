@@ -3,8 +3,7 @@ import checkIsValidUser from "@/composables/checkIsValidUser";
 import AddNewForm from "./AddNewForm/AddNewForm.vue";
 import FileList from "./FileList/FileList.vue";
 import { ref, onBeforeMount } from "vue";
-import logout from "@/models/services/logout";
-import router from "@/router";
+import BottomBar from "../BottomBar/BottomBar.vue";
 
 onBeforeMount(() => {
   checkIsValidUser();
@@ -12,20 +11,6 @@ onBeforeMount(() => {
 const hasFiles = ref(false);
 const shouldAdd = ref(false);
 const reFetch = ref(false);
-
-if ("Notification" in window) {
-  // Verifica se o navegador suporta a API de notificação
-  Notification.requestPermission().then(function (permission) {
-    if (permission === "granted") {
-      // Se a permissão foi concedida, cria a notificação
-      setTimeout(() => {
-        new Notification("Lembrete", {
-          body: "Não se esqueça de fazer X",
-        });
-      }, 2000)
-    }
-  });
-}
 
 function onLoadFinish(eventData) {
   if (!eventData) {
@@ -48,10 +33,7 @@ async function handleAdd() {
     shouldAdd.value = true;
   }
 }
-async function handleLogout() {
-  await logout()
-  router.push('/')
-}
+
 </script>
 <template>
   <div class="home">
@@ -64,7 +46,7 @@ async function handleLogout() {
       <FileList @load-finish="onLoadFinish" :re-fetch="reFetch" />
       <v-btn block @click="handleAdd"> Adicionar </v-btn>
     </div>
-    <v-btn icon class="bg-red-darken-1 logout" @click="handleLogout"> <s-icon icon-name="arrow-right-from-bracket" /> </v-btn>
+    <BottomBar />
   </div>
 </template>
 
