@@ -10,7 +10,7 @@ async function handleLogout() {
 
 <template>
   <div class="bottom-bar">
-    <div class="round">
+    <div @click="router.push('/user')" class="round">
       <s-icon icon-name="user"/>
     </div>
     <div class="round logout" @click="handleLogout">
