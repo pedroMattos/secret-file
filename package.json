@@ -12,6 +12,7 @@
     "@vueuse/rxjs": "^10.1.2",
     "core-js": "^3.8.3",
     "dexie": "^3.2.3",
+    "express": "^4.18.2",
     "firebase": "^9.21.0",
     "register-service-worker": "^1.7.2",
     "rxjs": "^7.8.1",

@@ -13,6 +13,20 @@ const hasFiles = ref(false);
 const shouldAdd = ref(false);
 const reFetch = ref(false);
 
+if ("Notification" in window) {
+  // Verifica se o navegador suporta a API de notificação
+  Notification.requestPermission().then(function (permission) {
+    if (permission === "granted") {
+      // Se a permissão foi concedida, cria a notificação
+      setTimeout(() => {
+        new Notification("Lembrete", {
+          body: "Não se esqueça de fazer X",
+        });
+      }, 2000)
+    }
+  });
+}
+
 function onLoadFinish(eventData) {
   if (!eventData) {
     hasFiles.value = false;
