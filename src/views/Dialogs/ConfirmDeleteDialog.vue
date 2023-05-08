@@ -1,7 +1,13 @@
 <script setup>
-import {ref} from 'vue'
+import {ref, defineEmits} from 'vue'
+
+const emits = defineEmits(['confirm-delete'])
 
 const dialog = ref(false)
+function handleDelete() {
+  dialog.value = false
+  emits('confirm-delete')
+}
 </script>
 
 <template>
@@ -10,7 +16,7 @@ const dialog = ref(false)
       width="auto"
     >
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" @click="handleDelete" icon variant="text">
+        <v-btn v-bind="props" icon variant="text">
           <s-icon icon-name="trash-alt" />
         </v-btn>
       </template>
@@ -20,8 +26,8 @@ const dialog = ref(false)
           Deseja apagar esse arquivo?
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" @click="dialog = false">Apagar</v-btn>
           <v-btn color="secondary" @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="primary" @click="handleDelete">Apagar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
