@@ -4,6 +4,7 @@ import LockAction from "../FileActions/LockAction/LockAction.vue";
 import CategoryView from "../FileActions/CategoryView/CategoryView.vue";
 import * as file from "@/models/services/localFile";
 import checkIsValidUser from "@/composables/checkIsValidUser";
+import { uploadFile } from "@/models/services/cloud";
 
 const emit = defineEmits(["cancel", "save"]);
 const fileName = ref(null);
@@ -17,23 +18,23 @@ const items = ref([
 const category = ref("normal");
 const lockState = ref(false);
 const status = ref(null);
-const fileUpload = ref(null)
+const fileUpload = ref(null);
+const fileData = ref(null);
 function getLockState(value) {
   lockState.value = value;
 }
 async function handleSave() {
-  console.log(fileUpload.value)
-  if (fileUpload.value) {
-    console.log(fileUpload)
-    return
-  }
   const isValid = await checkIsValidUser();
   if (!isValid) return;
+  if (fileUpload.value) {
+    await handleFile();
+  }
   file.add({
     name: fileName.value,
     content: content.value,
     category: category.value,
     password: filePass.value,
+    file: fileData.value,
   });
   status.value = "Adicionado com sucesso!";
   emit("save");
@@ -41,7 +42,12 @@ async function handleSave() {
 function handleCancel() {
   emit("cancel");
 }
-console.log(fileUpload)
+
+async function handleFile() {
+  if (!fileUpload.value) return;
+  const file = fileUpload.value.at(0);
+  fileData.value = await uploadFile(file);
+}
 </script>
 <template>
   <div class="form">
@@ -74,10 +80,12 @@ console.log(fileUpload)
         placeholder="Defina uma senha"
         :required="category === 'secret'"
       ></v-text-field>
-      <v-file-input clearable label="Escolha um arquivo" v-model="fileUpload">
-        <slot>
-          <s-icon icon-name="paperclip" />
-        </slot>
+      <v-file-input
+        clearable
+        label="Escolha um arquivo"
+        prepend-icon="fa-solid fa-paperclip"
+        v-model="fileUpload"
+      >
       </v-file-input>
       <v-select
         v-model="category"

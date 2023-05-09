@@ -20,6 +20,7 @@ export function add(fileData) {
       content: fileData.content,
       category: fileData.category,
       password: fileData.password,
+      file: fileData.file,
       date: `${year}-${month + 1 > 9 ? month + 1 : "0" + (month + 1)}-${
         day > 9 ? day : "0" + day
       }`,

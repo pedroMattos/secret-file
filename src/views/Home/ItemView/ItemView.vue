@@ -1,37 +1,46 @@
 <script setup>
-import {defineProps, defineEmits, ref} from 'vue'
+import { defineProps, defineEmits, ref } from "vue";
 import DeleteAction from "../FileActions/DeleteAction/DeleteAction.vue";
-import UnlockForm from '../UnlockForm/UnlockForm.vue';
-import CloudAction from '../FileActions/CloudAction/CloudAction.vue';
-const blockedByPass = ref(true)
-const emit = defineEmits(['itemDeleted', 'cancel'])
+import UnlockForm from "../UnlockForm/UnlockForm.vue";
+import CloudAction from "../FileActions/CloudAction/CloudAction.vue";
+const blockedByPass = ref(true);
+const emit = defineEmits(["itemDeleted", "cancel"]);
 const props = defineProps({
-  itemData: {type: Object, required: true}
-})
+  itemData: { type: Object, required: true },
+});
 
 function onUnlockFile() {
-  blockedByPass.value = false
+  blockedByPass.value = false;
 }
 function fileContent() {
   if (props.itemData.content.match(/(https?:\/\/[^\s]+)/g)) {
-    return true
+    return true;
   }
 
-  return false
+  return false;
 }
 </script>
 <template>
   <div class="item">
-    <unlock-form @cancel="emit('cancel')" @unlock-file="onUnlockFile" :pass="itemData.password" v-if="itemData.password && blockedByPass" />
+    <unlock-form
+      @cancel="emit('cancel')"
+      @unlock-file="onUnlockFile"
+      :pass="itemData.password"
+      v-if="itemData.password && blockedByPass"
+    />
     <div v-else>
       <div class="actions">
-        <delete-action @delete="emit('itemDeleted')" :item-id="props.itemData.id" />
+        <delete-action
+          @delete="emit('itemDeleted')"
+          :item-id="props.itemData.id"
+        />
         <cloud-action :item-data="itemData" />
       </div>
       <br />
       <s-text :is-link="fileContent()" :text="props.itemData.content">
         {{ props.itemData.content }}
       </s-text>
+      <img v-if="itemData.file" :src="itemData.file" />
     </div>
   </div>
 </template>
