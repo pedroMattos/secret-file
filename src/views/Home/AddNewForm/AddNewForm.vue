@@ -17,10 +17,16 @@ const items = ref([
 const category = ref("normal");
 const lockState = ref(false);
 const status = ref(null);
+const fileUpload = ref(null)
 function getLockState(value) {
   lockState.value = value;
 }
 async function handleSave() {
+  console.log(fileUpload.value)
+  if (fileUpload.value) {
+    console.log(fileUpload)
+    return
+  }
   const isValid = await checkIsValidUser();
   if (!isValid) return;
   file.add({
@@ -35,6 +41,7 @@ async function handleSave() {
 function handleCancel() {
   emit("cancel");
 }
+console.log(fileUpload)
 </script>
 <template>
   <div class="form">
@@ -67,6 +74,11 @@ function handleCancel() {
         placeholder="Defina uma senha"
         :required="category === 'secret'"
       ></v-text-field>
+      <v-file-input clearable label="Escolha um arquivo" v-model="fileUpload">
+        <slot>
+          <s-icon icon-name="paperclip" />
+        </slot>
+      </v-file-input>
       <v-select
         v-model="category"
         placeholder="Selecione a categoria"
