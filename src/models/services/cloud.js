@@ -16,8 +16,8 @@ import * as user from "./localUserData";
  */
 export async function saveFile(data) {
   const userData = await user.getUserData();
-  const files = await getFiles();
-  const filteredFiles = getFileById(files, data.id);
+  const files = await getFiles(userData.at(0).uuid);
+  const filteredFiles = getFileById(files.files, data.id);
   filteredFiles.push(data);
   const dbReference = getFirestore(app);
   const projectReferente = doc(
@@ -28,22 +28,21 @@ export async function saveFile(data) {
   return updateDoc(projectReferente, { files: [...filteredFiles] });
 }
 
-export async function getFiles() {
+export async function getFiles(documentRef) {
   const dbReference = getFirestore(app);
   const querySnapshot = await getDocs(
     collection(dbReference, process.env.VUE_APP_COLLECTION_NAME)
   );
 
   return querySnapshot.docs
-    .map((doc) => {
-      return doc.data().files;
-    })
-    .at(0);
+    .find((doc) => {
+      return documentRef === doc.id;
+    }).data()
 }
 
 function getFileById(fileList, id) {
   if (!fileList?.length) return [];
-  return fileList.filter((file) => file.id !== id && file.id);
+  return fileList.filter((file) => file.id !== id);
 }
 
 export async function uploadFile(file) {

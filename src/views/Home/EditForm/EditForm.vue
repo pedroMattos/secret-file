@@ -23,6 +23,7 @@ const category = ref(props.fileData.category);
 const lockState = ref(false);
 const fileUpload = ref(props.fileData.file);
 const fileD = ref(null);
+const addFile = ref(false);
 function getLockState(value) {
   lockState.value = value;
 }
@@ -30,7 +31,7 @@ async function handleSave() {
   const isValid = await checkIsValidUser();
   if (!isValid) return;
   if (fileUpload.value) {
-    await handleFile({});
+    await handleFile();
   }
   emit("save");
 
@@ -48,6 +49,10 @@ function handleCancel() {
 
 async function handleFile() {
   if (!fileUpload.value) return;
+  if (!resetFile.value && !addFile.value) {
+    fileD.value = fileUpload.value;
+    return;
+  }
   const file = fileUpload.value.at(0);
   fileD.value = await uploadFile(file);
 }
@@ -87,7 +92,7 @@ function handleRemoveFile() {
         placeholder="Defina uma senha"
         :required="category === 'secret'"
       ></v-text-field>
-      <figure class="image" v-if="fileUpload && !resetFile">
+      <figure class="image" v-if="fileUpload && !resetFile && !addFile">
         <img :src="fileUpload" />
         <figcaption>
           <v-btn
@@ -103,13 +108,16 @@ function handleRemoveFile() {
         </figcaption>
       </figure>
       <v-file-input
-        v-else-if="resetFile || fileUpload"
+        v-else-if="resetFile || fileUpload || addFile"
         clearable
         label="Escolha um novo arquivo"
         prepend-icon="fa-solid fa-paperclip"
         v-model="fileUpload"
       >
       </v-file-input>
+      <v-btn class="bg-blue-lighten-1" @click="addFile = true">
+        Adicionar arquivo
+      </v-btn>
 
       <v-select
         v-model="category"
