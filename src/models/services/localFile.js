@@ -35,6 +35,9 @@ export function add(fileData) {
 export function update(fileData) {
   return db.files.update(fileData.id, { inCloud: true });
 }
+export function updateAllAttributes(id, fileData) {
+  return db.files.update(id, {...fileData});
+}
 
 export function deleteById(id) {
   db.files
