@@ -2,7 +2,7 @@ import { db } from "@/Dexie";
 
 export function getData() {
   try {
-    const data = db.files.toArray();
+    const data = db.files.reverse().toArray();
     return data;
   } catch (error) {
     return error;
