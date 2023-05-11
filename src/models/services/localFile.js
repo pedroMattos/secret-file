@@ -10,7 +10,7 @@ export async function makeLocalFileUniqueByUser() {
   const files = await getData();
   const userData = await user.getUserData();
   files.forEach((file) => {
-    // if (file.uuid) return;
+    if (file.uuid) return;
     addUuidIntoFile(file.id, userData.at(0).uuid);
   });
 }
