@@ -1,37 +1,20 @@
 <script setup>
 import router from "@/router";
-import loginWithEmail from "@/models/services/loginWithEmail";
-import * as user from "@/models/services/localUserData";
-import { ref, onBeforeMount } from "vue";
-import checkIsValidUser from "@/composables/checkIsValidUser";
-
-onBeforeMount(() => {
-  sendToHome();
-});
+import * as user from "@/models/services/userManagement";
+import { ref } from "vue";
 
 const email = ref(null);
 const password = ref(null);
 const inputType = ref("password");
 const errorMessage = ref(null);
 
-async function sendToHome() {
-  const isValid = await checkIsValidUser();
-  if (isValid) {
-    router.push("/home");
-  }
-}
-
-function goTo() {
-  loginWithEmail(email.value, password.value)
+function handleCreateAccount() {
+  user.createUserWithEmail(email.value, password.value)
     .then((userCredential) => {
       const uid = userCredential.user.uid;
-      const email = userCredential.user.email;
-      const lastLogin = userCredential.user.metadata.lastLoginAt;
-      user
-        .saveUserData({ uuid: uid, email: email, lastLogin: lastLogin })
-        .then(() => {
-          router.push("/home");
-        });
+      user.newUserCreateDocument(uid).then(() => {
+        router.push("/");
+      })
     })
     .catch((error) => {
       errorMessage.value = error;
@@ -45,8 +28,8 @@ function goTo() {
     <div class="info-text">
       <s-text text-size="18px" weight="700"> Bem vindo ao Secret File </s-text>
       <s-text>
-        Aqui você pode salvar senhas, lembretes, prints importantes, links e
-        arquivos que só interessam a você
+        Crie uma conta e comece a salvar seus arquivos, links, prints e senhas
+        de uma forma que só você tem acesso.
       </s-text>
     </div>
     <v-text-field
@@ -81,8 +64,7 @@ function goTo() {
     <s-text text-color="red">
       {{ errorMessage }}
     </s-text>
-    <v-btn @click="goTo"> Entrar </v-btn>
-    <router-link :to="{ name: 'newUser' }">Criar Conta</router-link>
+    <v-btn @click="handleCreateAccount"> Criar conta </v-btn>
   </div>
 </template>
 
