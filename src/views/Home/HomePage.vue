@@ -4,6 +4,7 @@ import AddNewForm from "./AddNewForm/AddNewForm.vue";
 import FileList from "./FileList/FileList.vue";
 import { ref, onBeforeMount } from "vue";
 import BottomBar from "../BottomBar/BottomBar.vue";
+import * as file from '@/models/services/localFile'
 import { makeLocalFileUniqueByUser } from "@/models/services/localFile";
 const hasFiles = ref(false);
 const shouldAdd = ref(false);
@@ -35,6 +36,16 @@ async function handleAdd() {
     shouldAdd.value = true;
   }
 }
+function syncAll() {
+  console.log('veio?')
+  file.syncAll().then(() => {
+    reFetch.value = true
+
+    setTimeout(() => {
+      reFetch.value = false
+    }, 500)
+  })
+}
 </script>
 <template>
   <div class="home">
@@ -46,7 +57,7 @@ async function handleAdd() {
       />
       <FileList @load-finish="onLoadFinish" :re-fetch="reFetch" />
     </div>
-    <BottomBar @add="handleAdd" />
+    <BottomBar @add="handleAdd" @sync-all="syncAll" />
   </div>
 </template>
 

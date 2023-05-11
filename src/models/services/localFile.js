@@ -52,3 +52,17 @@ export function deleteById(id) {
       console.log("Deleted " + deleteCount + " objects");
     });
 }
+
+export async function hasUnSyncItems() {
+  const files = await db.files.toArray();
+  return files.filter((file) => file.inCloud === false).length;
+}
+
+export async function syncAll() {
+  const files = await db.files.toArray();
+  files
+    .filter((file) => file.inCloud === false)
+    .forEach((file) => {
+      update(file);
+    });
+}
