@@ -114,14 +114,6 @@ function handleRefetch() {
               icon-color="rgb(49, 155, 209)"
               icon-name="cloud-arrow-up"
             />
-            <v-snackbar v-model="snackbar">
-              Item dessincronizado com a nuvem
-              <template v-slot:actions>
-                <v-btn color="red" variant="text" @click="snackbar = false">
-                  Entendi
-                </v-btn>
-              </template>
-            </v-snackbar>
             <s-icon
               v-if="isBoolean(file.inCloud) && !file.inCloud"
               icon-color="#FF8A80"
@@ -144,6 +136,14 @@ function handleRefetch() {
         />
       </div>
     </div>
+    <v-snackbar v-model="snackbar">
+      Item dessincronizado com a nuvem
+      <template v-slot:actions>
+        <v-btn color="red" variant="text" @click="snackbar = false">
+          Entendi
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 

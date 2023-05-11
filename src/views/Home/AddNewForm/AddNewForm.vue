@@ -35,9 +35,11 @@ async function handleSave() {
     category: category.value,
     password: filePass.value,
     file: fileData.value,
+  }).then(() => {
+
+    status.value = "Adicionado com sucesso!";
+    emit("save");
   });
-  status.value = "Adicionado com sucesso!";
-  emit("save");
 }
 function handleCancel() {
   emit("cancel");

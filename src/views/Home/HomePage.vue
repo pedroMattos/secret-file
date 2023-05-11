@@ -4,9 +4,11 @@ import AddNewForm from "./AddNewForm/AddNewForm.vue";
 import FileList from "./FileList/FileList.vue";
 import { ref, onBeforeMount } from "vue";
 import BottomBar from "../BottomBar/BottomBar.vue";
+import { makeLocalFileUniqueByUser } from "@/models/services/localFile";
 
 onBeforeMount(() => {
   checkIsValidUser();
+  makeLocalFileUniqueByUser()
 });
 const hasFiles = ref(false);
 const shouldAdd = ref(false);
