@@ -2,15 +2,15 @@ import { db } from "@/Dexie";
 import * as user from "./localUserData";
 
 export async function getData() {
-  const userData = await user.getUserData();
-  return db.files.where("uuid").equals(userData.at(0).uuid).reverse().toArray();
+  // const userData = await user.getUserData();
+  return db.files.reverse().toArray();
 }
 
 export async function makeLocalFileUniqueByUser() {
   const files = await getData();
   const userData = await user.getUserData();
   files.forEach((file) => {
-    if (file.uuid) return;
+    // if (file.uuid) return;
     addUuidIntoFile(file.id, userData.at(0).uuid);
   });
 }
