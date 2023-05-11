@@ -95,7 +95,6 @@ function handleRefetch() {
         :key="index"
         :class="`list ${file.category} ${file?.inCloud ? 'in-cloud' : ''}`"
       >
-      {{ file.uuid }}
         <div :class="`list-item-area ${file.category}`">
           <div class="file-info" @click="handleViewItem(file.id)">
             <div class="name-area">

@@ -5,15 +5,10 @@ import FileList from "./FileList/FileList.vue";
 import { ref, onBeforeMount } from "vue";
 import BottomBar from "../BottomBar/BottomBar.vue";
 import { makeLocalFileUniqueByUser } from "@/models/services/localFile";
-import { getUserData } from "@/models/services/localUserData";
 const hasFiles = ref(false);
 const shouldAdd = ref(false);
 const reFetch = ref(false);
-const uuid = ref(null)
 onBeforeMount(() => {
-  getUserData().then((user) => {
-    uuid.value = user.at(0).uuid
-  });
   checkIsValidUser();
   makeLocalFileUniqueByUser()
 });
@@ -43,7 +38,6 @@ async function handleAdd() {
 </script>
 <template>
   <div class="home">
-    {{ uuid }}
     <div class="files-area">
       <AddNewForm
         v-if="!hasFiles || shouldAdd"
