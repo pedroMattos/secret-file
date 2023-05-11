@@ -1,10 +1,14 @@
 <script setup>
 import logout from "@/models/services/logout";
 import router from "@/router";
-
+import { defineEmits } from "vue";
+const emit = defineEmits(["add"]);
 async function handleLogout() {
   await logout();
   router.push("/");
+}
+function addFile() {
+  emit("add");
 }
 </script>
 
@@ -15,6 +19,9 @@ async function handleLogout() {
     </div> -->
     <div class="round logout" @click="handleLogout">
       <s-icon icon-name="arrow-right-from-bracket" />
+    </div>
+    <div class="round add-item" @click="addFile">
+      <s-icon icon-name="circle-plus" />
     </div>
   </div>
 </template>
@@ -42,6 +49,10 @@ async function handleLogout() {
     top: -15px;
     &.logout {
       background-color: red;
+      color: white;
+    }
+    &.add-item {
+      background-color: #42a5f5;
       color: white;
     }
   }

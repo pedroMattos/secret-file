@@ -43,9 +43,8 @@ async function handleAdd() {
         @cancel="shouldAdd = false"
       />
       <FileList @load-finish="onLoadFinish" :re-fetch="reFetch" />
-      <v-btn block @click="handleAdd"> Adicionar </v-btn>
     </div>
-    <BottomBar />
+    <BottomBar @add="handleAdd" />
   </div>
 </template>
 
