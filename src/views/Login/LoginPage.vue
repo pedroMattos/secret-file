@@ -6,7 +6,7 @@ import { ref, onBeforeMount } from "vue";
 import checkIsValidUser from "@/composables/checkIsValidUser";
 
 onBeforeMount(() => {
-  sendToHome()
+  sendToHome();
 });
 
 const email = ref(null);
@@ -15,9 +15,9 @@ const inputType = ref("password");
 const errorMessage = ref(null);
 
 async function sendToHome() {
-  const isValid = await checkIsValidUser()
+  const isValid = await checkIsValidUser();
   if (isValid) {
-    router.push('/home')
+    router.push("/home");
   }
 }
 
@@ -43,7 +43,7 @@ function goTo() {
   <div class="login">
     <s-icon icon-name="lock" icon-size="brand" />
     <div class="info-text">
-      <s-text text-size="18px" weight="700"> Bem vindo ao NOME_APP </s-text>
+      <s-text text-size="18px" weight="700"> Bem vindo ao Secret File </s-text>
       <s-text>
         Aqui você pode salvar senhas, lembretes, prints importantes, links e
         arquivos que só interessam a você
