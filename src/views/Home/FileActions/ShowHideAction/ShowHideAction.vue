@@ -1,20 +1,21 @@
 <script setup>
-import {ref, defineEmits, defineProps} from 'vue'
-const emit = defineEmits(['show'])
+import { ref, defineEmits, defineProps } from "vue";
+const emit = defineEmits(["show"]);
 const props = defineProps({
-  hide: Boolean
-})
-const show = ref(props.hide)
+  hide: Boolean,
+  disabled: Boolean,
+});
+const show = ref(props.hide);
 
 function handleShow(action) {
-  show.value = action
-  emit('show', action)
+  show.value = action;
+  emit("show", action);
 }
 </script>
 
 <template>
   <div class="show-hide">
-    <v-btn icon variant="text">
+    <v-btn :disabled="disabled" icon variant="text">
       <s-icon
         v-if="!show"
         icon-name="eye"

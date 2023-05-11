@@ -11,6 +11,7 @@ import {
 import ShowHideAction from "../FileActions/ShowHideAction/ShowHideAction.vue";
 import ItemView from "../ItemView/ItemView.vue";
 import checkIsValidUser from "@/composables/checkIsValidUser";
+import isBoolean from "@/composables/isBoolean";
 
 const props = defineProps({
   reFetch: Boolean,
@@ -28,6 +29,7 @@ const emit = defineEmits(["loadFinish"]);
 const files = ref(null);
 const hideData = ref(null);
 const showItemView = ref(null);
+const snackbar = ref(false);
 
 watch(shouldReFetch, (value) => {
   if (value) {
@@ -112,9 +114,24 @@ function handleRefetch() {
               icon-color="rgb(49, 155, 209)"
               icon-name="cloud-arrow-up"
             />
+            <v-snackbar v-model="snackbar">
+              Item dessincronizado com a nuvem
+              <template v-slot:actions>
+                <v-btn color="red" variant="text" @click="snackbar = false">
+                  Entendi
+                </v-btn>
+              </template>
+            </v-snackbar>
+            <s-icon
+              v-if="isBoolean(file.inCloud) && !file.inCloud"
+              icon-color="#FF8A80"
+              icon-name="cloud-arrow-up"
+              @click="snackbar = true"
+            />
             <ShowHideAction
               @show="() => onShow(file.id)"
               :hide="shouldHide(hideData, file)"
+              :disabled="file.category === 'normal'"
             />
           </div>
         </div>

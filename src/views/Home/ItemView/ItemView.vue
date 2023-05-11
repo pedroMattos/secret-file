@@ -27,6 +27,9 @@ function handleSave() {
   editing.value = false;
   emit("refetch");
 }
+function handleSaveOnCloud() {
+  handleSave();
+}
 </script>
 <template>
   <div>
@@ -52,7 +55,10 @@ function handleSave() {
               @delete="emit('itemDeleted')"
               :item-id="props.itemData.id"
             />
-            <cloud-action :item-data="itemData" />
+            <cloud-action
+              :item-data="itemData"
+              @save-on-cloud="handleSaveOnCloud"
+            />
           </div>
           <br />
           <s-text :is-link="fileContent()" :text="props.itemData.content">

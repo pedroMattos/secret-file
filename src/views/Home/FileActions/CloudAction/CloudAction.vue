@@ -20,8 +20,8 @@ async function handleSave() {
   cloud.saveFile(raw).then(() => {
     file.update(raw).then(() => {
       console.log("salvo");
+      emit("saveOnCloud");
     });
-    emit("saveOnCloud");
   });
 }
 </script>
