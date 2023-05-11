@@ -33,7 +33,6 @@ async function handleAdd() {
     shouldAdd.value = true;
   }
 }
-
 </script>
 <template>
   <div class="home">
@@ -54,7 +53,7 @@ async function handleAdd() {
 .logout {
   position: absolute;
   bottom: 5px;
-    right: 16px;
+  right: 16px;
 }
 .files-area {
   position: absolute;

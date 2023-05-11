@@ -7,7 +7,8 @@ import EditAction from "../FileActions/EditAction/EditAction.vue";
 import EditForm from "../EditForm/EditForm.vue";
 const blockedByPass = ref(true);
 const editing = ref(false);
-const emit = defineEmits(["itemDeleted", "cancel"]);
+const loading = ref(false);
+const emit = defineEmits(["itemDeleted", "cancel", "refetch"]);
 const props = defineProps({
   itemData: { type: Object, required: true },
 });
@@ -22,36 +23,43 @@ function fileContent() {
 
   return false;
 }
+function handleSave() {
+  editing.value = false;
+  emit("refetch");
+}
 </script>
 <template>
-  <div class="item">
-    <edit-form
-      v-if="editing"
-      :file-data="itemData"
-      @cancel="editing = false"
-      @save="editing = false"
-    />
-    <div v-else>
-      <unlock-form
-        @cancel="emit('cancel')"
-        @unlock-file="onUnlockFile"
-        :pass="itemData.password"
-        v-if="itemData.password && blockedByPass"
+  <div>
+    <div class="item">
+      <edit-form
+        v-if="editing"
+        :file-data="itemData"
+        @cancel="editing = false"
+        @save="handleSave"
+        @loading="(value) => (loading = value)"
       />
       <div v-else>
-        <div class="actions">
-          <edit-action @start-edit="editing = true" />
-          <delete-action
-            @delete="emit('itemDeleted')"
-            :item-id="props.itemData.id"
-          />
-          <cloud-action :item-data="itemData" />
+        <unlock-form
+          @cancel="emit('cancel')"
+          @unlock-file="onUnlockFile"
+          :pass="itemData.password"
+          v-if="itemData.password && blockedByPass"
+        />
+        <div v-else>
+          <div class="actions">
+            <edit-action @start-edit="editing = true" />
+            <delete-action
+              @delete="emit('itemDeleted')"
+              :item-id="props.itemData.id"
+            />
+            <cloud-action :item-data="itemData" />
+          </div>
+          <br />
+          <s-text :is-link="fileContent()" :text="props.itemData.content">
+            {{ props.itemData.content }}
+          </s-text>
+          <img v-if="itemData.file" :src="itemData.file" />
         </div>
-        <br />
-        <s-text :is-link="fileContent()" :text="props.itemData.content">
-          {{ props.itemData.content }}
-        </s-text>
-        <img v-if="itemData.file" :src="itemData.file" />
       </div>
     </div>
   </div>

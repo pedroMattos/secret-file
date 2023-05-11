@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits, defineProps } from "vue";
+import { ref, defineEmits, defineProps, reactive } from "vue";
 import LockAction from "../FileActions/LockAction/LockAction.vue";
 import CategoryView from "../FileActions/CategoryView/CategoryView.vue";
 import * as file from "@/models/services/localFile";
@@ -8,6 +8,9 @@ import { uploadFile } from "@/models/services/cloud";
 
 const props = defineProps({
   fileData: { type: Object },
+});
+const state = reactive({
+  loading: false,
 });
 const emit = defineEmits(["cancel", "save"]);
 const fileName = ref(props.fileData.name);
@@ -30,18 +33,23 @@ function getLockState(value) {
 async function handleSave() {
   const isValid = await checkIsValidUser();
   if (!isValid) return;
+  state.loading = true;
   if (fileUpload.value) {
     await handleFile();
   }
-  emit("save");
 
-  file.updateAllAttributes(props.fileData.id, {
-    name: fileName.value,
-    content: content.value,
-    category: category.value,
-    password: filePass.value,
-    file: fileD.value,
-  });
+  file
+    .updateAllAttributes(props.fileData.id, {
+      name: fileName.value,
+      content: content.value,
+      category: category.value,
+      password: filePass.value,
+      file: fileD.value,
+    })
+    .then(() => {
+      emit("save");
+      state.loading = false;
+    });
 }
 function handleCancel() {
   emit("cancel");
@@ -71,7 +79,11 @@ function handleRemoveFile() {
       />
       <category-view :category="category" />
     </div>
-    <form @submit.prevent="handleSave">
+    <v-progress-circular
+      v-if="state.loading"
+      indeterminate
+    ></v-progress-circular>
+    <form v-else @submit.prevent="handleSave">
       <v-text-field
         v-model="fileName"
         placeholder="Nome"

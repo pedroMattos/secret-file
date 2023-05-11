@@ -1,12 +1,25 @@
 <script setup>
 import * as file from "@/models/services/localFile";
-import { ref, defineEmits, defineProps, watch, computed } from "vue";
+import {
+  ref,
+  defineEmits,
+  defineProps,
+  watch,
+  computed,
+  onBeforeMount,
+} from "vue";
 import ShowHideAction from "../FileActions/ShowHideAction/ShowHideAction.vue";
 import ItemView from "../ItemView/ItemView.vue";
 import checkIsValidUser from "@/composables/checkIsValidUser";
 
 const props = defineProps({
   reFetch: Boolean,
+});
+onBeforeMount(() => {
+  file.getData().then((filesData) => {
+    files.value = filesData;
+    emit("loadFinish", filesData.length);
+  });
 });
 const shouldReFetch = computed(() => {
   return props.reFetch;
@@ -15,11 +28,6 @@ const emit = defineEmits(["loadFinish"]);
 const files = ref(null);
 const hideData = ref(null);
 const showItemView = ref(null);
-
-file.getData().then((filesData) => {
-  files.value = filesData;
-  emit("loadFinish", filesData.length);
-});
 
 watch(shouldReFetch, (value) => {
   if (value) {
@@ -64,40 +72,61 @@ async function handleViewItem(id) {
 function shouldHide(hideData, file) {
   return hideData !== file.id && file.category !== "normal";
 }
+
+function handleRefetch() {
+  showItemView.value = null;
+  files.value = null;
+  file.getData().then((filesData) => {
+    files.value = filesData;
+    emit("loadFinish", filesData.length);
+  });
+}
 </script>
 <template>
-  <div
-    v-for="(file, index) in files"
-    :key="index"
-    :class="`list ${file.category} ${file?.inCloud ? 'in-cloud' : ''}`"
-  >
-    <div :class="`list-item-area ${file.category}`">
-      <div class="file-info" @click="handleViewItem(file.id)">
-        <div class="name-area">
-          <s-text>
-            {{ shouldHide(hideData, file) ? "********" : file.name }}
-          </s-text>
+  <div>
+    <div v-if="!files" class="loader">
+      <v-progress-circular indeterminate></v-progress-circular>
+    </div>
+    <div v-else>
+      <div
+        v-for="(file, index) in files"
+        :key="index"
+        :class="`list ${file.category} ${file?.inCloud ? 'in-cloud' : ''}`"
+      >
+        <div :class="`list-item-area ${file.category}`">
+          <div class="file-info" @click="handleViewItem(file.id)">
+            <div class="name-area">
+              <s-text>
+                {{ shouldHide(hideData, file) ? "********" : file.name }}
+              </s-text>
+            </div>
+            <div class="date-area">
+              <s-text>
+                {{ date(file.date) }}
+              </s-text>
+            </div>
+          </div>
+          <div class="actions">
+            <s-icon
+              v-if="file.inCloud"
+              icon-color="rgb(49, 155, 209)"
+              icon-name="cloud-arrow-up"
+            />
+            <ShowHideAction
+              @show="() => onShow(file.id)"
+              :hide="shouldHide(hideData, file)"
+            />
+          </div>
         </div>
-        <div class="date-area">
-          <s-text>
-            {{ date(file.date) }}
-          </s-text>
-        </div>
-      </div>
-      <div class="actions">
-        <s-icon v-if="file.inCloud" icon-color="rgb(49, 155, 209)" icon-name="cloud-arrow-up" />
-        <ShowHideAction
-          @show="() => onShow(file.id)"
-          :hide="shouldHide(hideData, file)"
+        <ItemView
+          v-if="showItemView === file.id"
+          @item-deleted="onDelete"
+          @refetch="handleRefetch"
+          @cancel="handleViewItem(file.id)"
+          :item-data="file"
         />
       </div>
     </div>
-    <ItemView
-      v-if="showItemView === file.id"
-      @item-deleted="onDelete"
-      @cancel="handleViewItem(file.id)"
-      :item-data="file"
-    />
   </div>
 </template>
 
@@ -125,6 +154,9 @@ function shouldHide(hideData, file) {
   &.secret {
     border-color: red;
   }
+}
+.loader {
+  margin: 16px;
 }
 .list-item-area {
   width: 100%;
