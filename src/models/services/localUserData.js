@@ -1,11 +1,12 @@
 import { dbUser } from "@/Dexie";
 
 export function saveUserData(user) {
-  const date = new Date()
+  const date = new Date();
   return dbUser.user.add({
     uuid: user.uuid,
     email: user.email,
     lastLogin: date.getTime(),
+    userName: user.displayName,
   });
 }
 
@@ -20,4 +21,8 @@ export function deleteUserRegisterById(uuid) {
     .then(function (deleteCount) {
       console.log("Deleted " + deleteCount + " objects");
     });
+}
+
+export function updateUser(userDataUid, name) {
+  return dbUser.user.update(userDataUid, { userName: name });
 }

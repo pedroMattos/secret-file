@@ -27,8 +27,9 @@ function goTo() {
       const uid = userCredential.user.uid;
       const email = userCredential.user.email;
       const lastLogin = userCredential.user.metadata.lastLoginAt;
+      const userName = userCredential.user.displayName
       user
-        .saveUserData({ uuid: uid, email: email, lastLogin: lastLogin })
+        .saveUserData({ uuid: uid, email: email, lastLogin: lastLogin, userName: userName })
         .then(() => {
           router.push("/home");
         });

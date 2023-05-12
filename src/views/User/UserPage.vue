@@ -1,5 +1,19 @@
 <script setup>
+import { getUserData } from '@/models/services/localUserData';
 import router from '@/router';
+import {ref, onBeforeMount} from 'vue'
+import AddUserInfo from './AddUserInfo/AddUserInfo.vue';
+const userInfo = ref(null)
+
+function getData() {
+  getUserData().then(user => {
+    userInfo.value = user.at(0)
+  })
+}
+
+onBeforeMount(() => {
+  getData()
+})
 </script>
 
 <template>
@@ -16,10 +30,28 @@ import router from '@/router';
         </div>
       </div>
     </div>
+    <div v-if="userInfo" class="user-info">
+      <AddUserInfo v-if="!userInfo?.userName" @save="getData" />
+      <s-text text-size="16px" v-else>
+        Nome: {{ userInfo?.userName }}
+      </s-text>
+      <s-text>
+        Último Login: {{ new Date(userInfo?.lastLogin) }}
+      </s-text>
+      <s-text>
+        Email: {{ userInfo?.email }}
+      </s-text>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.user-info {
+  padding: 0 16px;
+  p {
+    text-align: left;
+  }
+}
 .user-header, .back, .avatar {
   display: flex;
 }

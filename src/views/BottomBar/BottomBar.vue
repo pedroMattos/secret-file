@@ -24,11 +24,11 @@ onBeforeMount(() => {
 
 <template>
   <div class="bottom-bar">
-    <!-- <div @click="router.push('/user')" class="round">
-      <s-icon icon-name="user"/>
-    </div> -->
     <div class="round logout" @click="handleLogout">
       <s-icon icon-name="arrow-right-from-bracket" />
+    </div>
+    <div @click="router.push('/user')" class="round">
+      <s-icon icon-name="user"/>
     </div>
     <div v-if="countUnSync > 1" class="round sinc-all" @click="syncAll">
       <s-icon icon-name="cloud" />
