@@ -64,7 +64,10 @@ function handleSaveOnCloud() {
           <s-text :is-link="fileContent()" :text="props.itemData.content">
             {{ props.itemData.content }}
           </s-text>
-          <img v-if="itemData.file" :src="itemData.file" />
+          <div v-if="itemData.fileType === 'pdf'" class="embed-container">
+            <iframe :src="itemData.file" frameborder="0"></iframe>
+          </div>
+          <img v-else :src="itemData.file" />
         </div>
       </div>
     </div>
@@ -74,6 +77,23 @@ function handleSaveOnCloud() {
 <style lang="scss" scoped>
 img {
   width: 100%;
+}
+.embed-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.embed-container iframe,
+.embed-container object,
+.embed-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 .item {
   background-color: white;

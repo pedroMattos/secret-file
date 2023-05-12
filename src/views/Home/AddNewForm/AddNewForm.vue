@@ -5,11 +5,13 @@ import CategoryView from "../FileActions/CategoryView/CategoryView.vue";
 import * as file from "@/models/services/localFile";
 import checkIsValidUser from "@/composables/checkIsValidUser";
 import { uploadFile } from "@/models/services/cloud";
+import useFileExtension from "@/composables/useFileExtension";
 
 const emit = defineEmits(["cancel", "save"]);
 const fileName = ref(null);
 const content = ref(null);
 const filePass = ref(null);
+const fileType = ref(null);
 const items = ref([
   { title: "Normal", value: "normal" },
   { title: "Confidencial", value: "classifield" },
@@ -29,17 +31,19 @@ async function handleSave() {
   if (fileUpload.value) {
     await handleFile();
   }
-  file.add({
-    name: fileName.value,
-    content: content.value,
-    category: category.value,
-    password: filePass.value,
-    file: fileData.value,
-  }).then(() => {
-
-    status.value = "Adicionado com sucesso!";
-    emit("save");
-  });
+  file
+    .add({
+      name: fileName.value,
+      content: content.value,
+      category: category.value,
+      password: filePass.value,
+      fileType: fileType.value,
+      file: fileData.value,
+    })
+    .then(() => {
+      status.value = "Adicionado com sucesso!";
+      emit("save");
+    });
 }
 function handleCancel() {
   emit("cancel");
@@ -48,6 +52,7 @@ function handleCancel() {
 async function handleFile() {
   if (!fileUpload.value) return;
   const file = fileUpload.value.at(0);
+  fileType.value = useFileExtension(file.name);
   fileData.value = await uploadFile(file);
 }
 </script>

@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import * as user from "./localUserData";
+import useFileExtension from "@/composables/useFileExtension"
 
 /**
  *
@@ -46,13 +47,14 @@ function getFileById(fileList, id) {
 }
 
 export async function uploadFile(file) {
+  const extension = useFileExtension(file.name)
   const timestamp = new Date().getTime()
   const userData = await user.getUserData();
   const storage = getStorage(app);
   const metadata = {
     contentType: null
   };
-  const filePath =  `${userData.at(0).uuid}/${timestamp}`
+  const filePath =  `${userData.at(0).uuid}/${timestamp}.${extension}`
   const storageRef = ref(storage, filePath);
   await uploadBytesResumable(storageRef, file, metadata);
 

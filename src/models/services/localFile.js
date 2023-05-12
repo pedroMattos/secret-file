@@ -27,6 +27,7 @@ export async function add(fileData) {
     category: fileData.category,
     password: fileData.password,
     uuid: userData.at(0).uuid,
+    fileType: fileData.fileType,
     file: fileData.file,
     date: `${year}-${month + 1 > 9 ? month + 1 : "0" + (month + 1)}-${
       day > 9 ? day : "0" + day

@@ -5,6 +5,7 @@ import CategoryView from "../FileActions/CategoryView/CategoryView.vue";
 import * as file from "@/models/services/localFile";
 import checkIsValidUser from "@/composables/checkIsValidUser";
 import { uploadFile } from "@/models/services/cloud";
+import useFileExtension from "@/composables/useFileExtension";
 
 const props = defineProps({
   fileData: { type: Object },
@@ -25,6 +26,7 @@ const items = ref([
 const category = ref(props.fileData.category);
 const lockState = ref(false);
 const fileUpload = ref(props.fileData.file);
+const fileType = ref(props.fileData.fileType);
 const fileD = ref(null);
 const addFile = ref(false);
 function getLockState(value) {
@@ -44,6 +46,7 @@ async function handleSave() {
       content: content.value,
       category: category.value,
       password: filePass.value,
+      fileType: fileType.value,
       file: fileD.value,
     })
     .then(() => {
@@ -62,6 +65,7 @@ async function handleFile() {
     return;
   }
   const file = fileUpload.value.at(0);
+  fileType.value = useFileExtension(file.name);
   fileD.value = await uploadFile(file);
 }
 function handleRemoveFile() {
@@ -105,7 +109,10 @@ function handleRemoveFile() {
         :required="category === 'secret'"
       ></v-text-field>
       <figure class="image" v-if="fileUpload && !resetFile && !addFile">
-        <img :src="fileUpload" />
+        <div v-if="fileType === 'pdf'" class="embed-container">
+          <iframe :src="fileUpload" frameborder="0" width="100%"></iframe>
+        </div>
+        <img v-else :src="fileUpload" />
         <figcaption>
           <v-btn
             class="bg-red-darken-1"
