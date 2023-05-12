@@ -3,7 +3,12 @@ import { getUserData } from '@/models/services/localUserData';
 import router from '@/router';
 import {ref, onBeforeMount} from 'vue'
 import AddUserInfo from './AddUserInfo/AddUserInfo.vue';
+import CryptoJS from 'crypto-js'
 const userInfo = ref(null)
+const ciphertext = ref(null)
+const bytes = ref(null)
+const decryptedData = ref(null)
+const data = ref('Mensagem a ser encriptada')
 
 function getData() {
   getUserData().then(user => {
@@ -13,7 +18,12 @@ function getData() {
 
 onBeforeMount(() => {
   getData()
+  ciphertext.value = CryptoJS.AES.encrypt(JSON.stringify(data.value), 'secret key 123').toString();
+  bytes.value  = CryptoJS.AES.decrypt(ciphertext.value, 'secret key 123');
+  decryptedData.value = JSON.parse(bytes.value.toString(CryptoJS.enc.Utf8));
+  console.log(decryptedData.value)
 })
+
 </script>
 
 <template>
@@ -30,6 +40,8 @@ onBeforeMount(() => {
         </div>
       </div>
     </div>
+    {{ ciphertext }}
+    {{ decryptedData }}
     <div v-if="userInfo" class="user-info">
       <AddUserInfo v-if="!userInfo?.userName" @save="getData" />
       <s-text text-size="16px" v-else>
