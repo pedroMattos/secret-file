@@ -15,6 +15,13 @@ export async function makeLocalFileUniqueByUser() {
   });
 }
 
+export function createFileByCloudFile(cloudFile) {
+  const file = cloudFile
+  file.cloudId = cloudFile.id
+  delete file.id
+  return db.files.add({...file})
+}
+
 export async function add(fileData) {
   const date = new Date();
   const day = date.getDay();

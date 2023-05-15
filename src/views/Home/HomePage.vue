@@ -2,18 +2,34 @@
 import checkIsValidUser from "@/composables/checkIsValidUser";
 import AddNewForm from "./AddNewForm/AddNewForm.vue";
 import FileList from "./FileList/FileList.vue";
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed, toRaw } from "vue";
 import BottomBar from "../BottomBar/BottomBar.vue";
-import * as file from '@/models/services/localFile'
+import * as file from "@/models/services/localFile";
 import { makeLocalFileUniqueByUser } from "@/models/services/localFile";
+import { useCloudBakcup } from "@/composables/useCloudBackup";
+import LoadCloudItems from "./LoadCloudItems/LoadCloudItems.vue";
 const hasFiles = ref(false);
 const shouldAdd = ref(false);
 const reFetch = ref(false);
+const { filesInLocal, filesInCloud } = useCloudBakcup();
 onBeforeMount(() => {
   checkIsValidUser();
-  makeLocalFileUniqueByUser()
+  makeLocalFileUniqueByUser();
 });
 
+const cloudFilesNotInLocal = computed(() => {
+  const local = toRaw(filesInLocal.value);
+  const cloud = toRaw(filesInCloud.value);
+
+  return cloud.files?.filter(
+    (localItem) =>
+      !local?.some(
+        (cloudItem) =>
+          (cloudItem.id === localItem.id && !localItem.inCloud) ||
+          cloudItem.id === localItem.cloudId
+      )
+  );
+});
 
 function onLoadFinish(eventData) {
   if (!eventData) {
@@ -25,7 +41,6 @@ function onLoadFinish(eventData) {
   hasFiles.value = true;
 }
 function onSave() {
-  console.log("novo arquivo!");
   reFetch.value = true;
   shouldAdd.value = false;
 }
@@ -37,14 +52,17 @@ async function handleAdd() {
   }
 }
 function syncAll() {
-  console.log('veio?')
   file.syncAll().then(() => {
-    reFetch.value = true
+    refetch();
+  });
+}
 
-    setTimeout(() => {
-      reFetch.value = false
-    }, 500)
-  })
+function refetch() {
+  reFetch.value = true;
+
+  setTimeout(() => {
+    reFetch.value = false;
+  }, 500);
 }
 </script>
 <template>
@@ -54,6 +72,11 @@ function syncAll() {
         v-if="!hasFiles || shouldAdd"
         @save="onSave"
         @cancel="shouldAdd = false"
+      />
+      <LoadCloudItems
+        @refetch="refetch"
+        v-if="cloudFilesNotInLocal"
+        :items-in-cloud="cloudFilesNotInLocal"
       />
       <FileList @load-finish="onLoadFinish" :re-fetch="reFetch" />
     </div>
