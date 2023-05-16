@@ -22,11 +22,12 @@ const cloudFilesNotInLocal = computed(() => {
   const cloud = toRaw(filesInCloud.value);
 
   return cloud.files?.filter(
-    (localItem) =>
+    (cloudItem) =>
       !local?.some(
-        (cloudItem) =>
-          (cloudItem.id === localItem.id && !localItem.inCloud) ||
+        (localItem) => {
+          return cloudItem.id === localItem.id ||
           cloudItem.id === localItem.cloudId
+        }          
       )
   );
 });
