@@ -76,7 +76,7 @@ function refetch() {
       />
       <LoadCloudItems
         @refetch="refetch"
-        v-if="cloudFilesNotInLocal"
+        v-if="cloudFilesNotInLocal?.length > 0"
         :items-in-cloud="cloudFilesNotInLocal"
       />
       <FileList @load-finish="onLoadFinish" :re-fetch="reFetch" />
