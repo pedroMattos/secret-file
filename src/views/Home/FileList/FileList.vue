@@ -110,6 +110,11 @@ function handleRefetch() {
           </div>
           <div class="actions">
             <s-icon
+              v-if="file.cloudId"
+              icon-color="#64FFDA"
+              icon-name="cloud"
+            />
+            <s-icon
               v-if="file.inCloud"
               icon-color="rgb(49, 155, 209)"
               icon-name="cloud-arrow-up"
