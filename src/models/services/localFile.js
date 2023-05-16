@@ -16,10 +16,18 @@ export async function makeLocalFileUniqueByUser() {
 }
 
 export function createFileByCloudFile(cloudFile) {
-  const file = cloudFile
-  file.cloudId = cloudFile.id
-  delete file.id
-  return db.files.add({...file})
+  return db.files.add({
+    name: cloudFile.name,
+    cloudId: cloudFile.id,
+    content: cloudFile.content,
+    category: cloudFile.category,
+    password: cloudFile.password,
+    uuid: cloudFile.uuid,
+    fileType: cloudFile.fileType,
+    file: cloudFile.file,
+    date: cloudFile.date,
+    inCloud: cloudFile.inCloud,
+  });
 }
 
 export async function add(fileData) {
