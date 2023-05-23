@@ -23,11 +23,9 @@ const cloudFilesNotInLocal = computed(() => {
 
   return cloud.files?.filter(
     (cloudItem) =>
-      !local?.some(
-        (localItem) => {
-          return cloudItem.id === localItem.id
-        }          
-      )
+      !local?.some((localItem) => {
+        return cloudItem.id === localItem.cloudId;
+      })
   );
 });
 
