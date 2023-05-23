@@ -20,13 +20,24 @@ export async function saveFile(data) {
   const files = await getFiles(userData.at(0).uuid);
   const filteredFiles = getFileById(files.files, data.id);
   filteredFiles.push(data);
+  return save(filteredFiles, userData.at(0).uuid)
+}
+
+function save(filesData, uuid) {
   const dbReference = getFirestore(app);
   const projectReferente = doc(
     dbReference,
     process.env.VUE_APP_COLLECTION_NAME,
-    userData.at(0).uuid
+    uuid
   );
-  return updateDoc(projectReferente, { files: [...filteredFiles] });
+  return updateDoc(projectReferente, { files: [...filesData] });
+}
+
+export async function deleteFile(itemId) {
+  const userData = await user.getUserData();
+  const {files} = await getFiles(userData.at(0).uuid);
+  const filesWithouSelected = getFileById(files, itemId)
+  return save(filesWithouSelected, userData.at(0).uuid)
 }
 
 export async function getFiles(documentRef) {
