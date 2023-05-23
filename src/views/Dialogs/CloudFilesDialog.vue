@@ -1,6 +1,8 @@
 <script setup>
 import { ref, defineEmits, defineProps, toRaw } from "vue";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog.vue";
 import * as local from "@/models/services/localFile";
+import * as cloud from "@/models/services/cloud";
 
 const emits = defineEmits(["refetch"]);
 const prop = defineProps({
@@ -12,6 +14,10 @@ const items = ref(prop.cloudItems);
 function handleClose() {
   dialog.value = false;
   emits("confirm-close");
+}
+
+function handleDelete(itemId) {
+  cloud.deleteFile(itemId);
 }
 
 function createFile(cloudItem) {
@@ -36,13 +42,18 @@ function createFile(cloudItem) {
         <div v-for="(cloudItem, index) in items" :key="index">
           <div class="file">
             <s-text>{{ cloudItem.name }}</s-text>
-            <v-btn
-              variant="text"
-              icon
-              @click="() => createFile(cloudItem, index)"
-            >
-              <s-icon icon-name="cloud-arrow-down" />
-            </v-btn>
+            <div>
+              <v-btn
+                variant="text"
+                icon
+                @click="() => createFile(cloudItem, index)"
+              >
+                <s-icon icon-name="cloud-arrow-down" />
+              </v-btn>
+              <confirm-delete-dialog
+                @confirm-delete="handleDelete(cloudItem.id)"
+              />
+            </div>
           </div>
         </div>
       </v-card-text>
