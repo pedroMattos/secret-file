@@ -15,7 +15,14 @@ export async function makeLocalFileUniqueByUser() {
   });
 }
 
-export function createFileByCloudFile(cloudFile) {
+function checkCloudItemIsLocal(localItems, cloudItem) {
+  return !!localItems.find((localItem) => localItem.cloudId === cloudItem.id);
+}
+
+export async function createFileByCloudFile(cloudFile) {
+  const data = await getData();
+  const alreadyLocal = checkCloudItemIsLocal(data, cloudFile);
+  if (alreadyLocal) return;
   return db.files.add({
     name: cloudFile.name,
     cloudId: cloudFile.id,
