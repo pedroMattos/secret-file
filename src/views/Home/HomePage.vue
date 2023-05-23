@@ -25,8 +25,7 @@ const cloudFilesNotInLocal = computed(() => {
     (cloudItem) =>
       !local?.some(
         (localItem) => {
-          return cloudItem.id === localItem.id ||
-          cloudItem.id === localItem.cloudId
+          return cloudItem.id === localItem.id
         }          
       )
   );
