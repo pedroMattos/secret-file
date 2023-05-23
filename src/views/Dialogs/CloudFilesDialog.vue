@@ -1,9 +1,11 @@
 <script setup>
 import { ref, defineEmits, defineProps, toRaw } from "vue";
+import { useStore } from "vuex";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog.vue";
 import * as local from "@/models/services/localFile";
 import * as cloud from "@/models/services/cloud";
 
+const store = useStore();
 const emits = defineEmits(["refetch"]);
 const prop = defineProps({
   cloudItems: Array,
@@ -14,16 +16,19 @@ const items = ref(prop.cloudItems);
 function handleClose() {
   dialog.value = false;
   emits("confirm-close");
+  dialog.value = false;
 }
 
 function handleDelete(itemId) {
   cloud.deleteFile(itemId);
+  store.commit("refetchCloudItems", true);
 }
 
 function createFile(cloudItem) {
   const cloud = toRaw(cloudItem);
   local.createFileByCloudFile(cloud).then(() => {
     dialog.value = false;
+    store.commit("refetchCloudItems", true);
     emits("refetch");
   });
 }
