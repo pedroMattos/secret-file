@@ -1,10 +1,10 @@
 <script setup>
 import logout from "@/models/services/logout";
-import * as file from '@/models/services/localFile'
+import * as file from "@/models/services/localFile";
 import router from "@/router";
 import { defineEmits, onBeforeMount, ref } from "vue";
 const emit = defineEmits(["add", "syncAll"]);
-const countUnSync = ref(0)
+const countUnSync = ref(0);
 async function handleLogout() {
   await logout();
   router.push("/");
@@ -13,13 +13,13 @@ function addFile() {
   emit("add");
 }
 function syncAll() {
-  emit('syncAll')
+  emit("syncAll");
 }
 onBeforeMount(() => {
   file.hasUnSyncItems().then((count) => {
-    countUnSync.value = count
-  })
-})
+    countUnSync.value = count;
+  });
+});
 </script>
 
 <template>
@@ -28,7 +28,7 @@ onBeforeMount(() => {
       <s-icon icon-name="arrow-right-from-bracket" />
     </div>
     <!-- <div @click="router.push('/user')" class="round">
-      <s-icon icon-name="user"/>
+      <s-icon icon-name="user" />
     </div> -->
     <div v-if="countUnSync > 1" class="round sinc-all" @click="syncAll">
       <s-icon icon-name="cloud" />
@@ -65,7 +65,7 @@ onBeforeMount(() => {
       color: white;
     }
     &.add-item {
-      background-color: #4DB6AC;
+      background-color: #4db6ac;
       color: white;
     }
   }
