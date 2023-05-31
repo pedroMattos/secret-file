@@ -5,7 +5,6 @@ import FileList from "./FileList/FileList.vue";
 import { ref, onBeforeMount, computed, toRaw } from "vue";
 import BottomBar from "../BottomBar/BottomBar.vue";
 import * as file from "@/models/services/localFile";
-import { makeLocalFileUniqueByUser } from "@/models/services/localFile";
 import { useCloudBakcup } from "@/composables/useCloudBackup";
 import LoadCloudItems from "./LoadCloudItems/LoadCloudItems.vue";
 const hasFiles = ref(false);
@@ -14,12 +13,12 @@ const reFetch = ref(false);
 const { filesInLocal, filesInCloud } = useCloudBakcup();
 onBeforeMount(() => {
   checkIsValidUser();
-  makeLocalFileUniqueByUser();
 });
 
 const cloudFilesNotInLocal = computed(() => {
   const local = toRaw(filesInLocal.value);
   const cloud = toRaw(filesInCloud.value);
+  file.updateAllPasswords(local);
 
   return cloud.files?.filter(
     (cloudItem) =>
