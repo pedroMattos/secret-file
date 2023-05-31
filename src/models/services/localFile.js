@@ -80,7 +80,9 @@ export function updateAllPasswords(files) {
 
 export function updateAllAttributes(id, fileData) {
   const data = fileData
-  data.password = useEncryptData(data.password)
+  if (!data.encryptedPassword) {
+    data.password = useEncryptData(data.password)
+  }
   return db.files.update(id, { ...data, inCloud: false, encryptedPassword: true });
 }
 
