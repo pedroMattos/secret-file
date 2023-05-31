@@ -1,5 +1,6 @@
 import { db } from "@/Dexie";
 import * as user from "./localUserData";
+import useEncryptData from '@/composables/useEcryptData'
 
 export async function getData() {
   const userData = await user.getUserData();
@@ -43,11 +44,13 @@ export async function add(fileData) {
   const month = date.getMonth();
   const year = date.getFullYear();
   const userData = await user.getUserData();
+  const password = useEncryptData(fileData.password)
   return db.files.add({
     name: fileData.name,
     content: fileData.content,
     category: fileData.category,
-    password: fileData.password,
+    password,
+    encryptedPassword: true,
     uuid: userData.at(0).uuid,
     fileType: fileData.fileType,
     file: fileData.file,
@@ -60,9 +63,27 @@ export async function add(fileData) {
 export function update(fileData) {
   return db.files.update(fileData.id, { inCloud: true });
 }
-export function updateAllAttributes(id, fileData) {
-  return db.files.update(id, { ...fileData, inCloud: false });
+
+export function updateAllPasswords(files) {
+  const newFiles = files.map((file) => {
+    return {
+      ...file,
+      password: useEncryptData(file.password)
+    }
+  })
+
+  newFiles.forEach((newFile) => {
+    if (newFile.encryptedPassword) return
+    db.files.update(newFile.id, { ...newFile, inCloud: false, encryptedPassword: true });
+  })
 }
+
+export function updateAllAttributes(id, fileData) {
+  const data = fileData
+  data.password = useEncryptData(data.password)
+  return db.files.update(id, { ...data, inCloud: false, encryptedPassword: true });
+}
+
 export function addUuidIntoFile(id, uuid) {
   return db.files.update(id, { uuid: uuid, inCloud: false });
 }
