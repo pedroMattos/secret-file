@@ -42,6 +42,7 @@ async function handleSave() {
 
   file
     .updateAllAttributes(props.fileData.id, {
+      ...props.fileData,
       name: fileName.value,
       content: content.value,
       category: category.value,
@@ -78,7 +79,7 @@ function handleRemoveFile() {
     <div class="actions">
       <lock-action
         @lock-unlock="getLockState"
-        :allow-lock="category !== 'normal'"
+        :allow-lock="category !== 'normal' && !filePass"
         :is-secret="category === 'secret'"
       />
       <category-view :category="category" />
