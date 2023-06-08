@@ -98,8 +98,9 @@ function handleRefetch() {
         <div :class="`list-item-area ${file.category}`">
           <div class="file-info" @click="handleViewItem(file.id)">
             <div class="name-area">
-              <s-text>
-                {{ shouldHide(hideData, file) ? "********" : file.name }}
+              <s-text allign="left">
+                <!-- {{ shouldHide(hideData, file) ? "********" : file.name }} -->
+                {{ file.name }}
               </s-text>
             </div>
             <div class="date-area">
@@ -128,7 +129,7 @@ function handleRefetch() {
             <ShowHideAction
               @show="() => onShow(file.id)"
               :hide="shouldHide(hideData, file)"
-              :disabled="file.category === 'normal'"
+              disabled
             />
           </div>
         </div>
