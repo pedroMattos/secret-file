@@ -82,6 +82,10 @@ export function updateAllPasswords(files) {
 
 export function updateAllAttributes(id, fileData) {
   const data = fileData
+  if (data.protected) {
+    data.content = useEncryptData(data.content)
+    if (data.file) data.file = useEncryptData(data.file)
+  }
   if (!data.encryptedPassword) {
     data.password = useEncryptData(data.password)
   }
