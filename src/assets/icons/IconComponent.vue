@@ -6,9 +6,6 @@ defineProps({
   iconType: { type: String, default: "solid" },
   iconSize: {
     type: String,
-    validator(propValue) {
-      return ["huge", "tiny", "medium", "small", "brand"].includes(propValue);
-    },
     default: "",
   },
   iconColor: { type: String },
@@ -21,7 +18,6 @@ defineProps({
 
 <style lang="scss" scoped>
 i {
-
   color: v-bind(iconColor);
   &.huge {
     font-size: 24px;
