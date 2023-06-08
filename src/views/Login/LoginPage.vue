@@ -50,7 +50,7 @@ function goTo() {
     <s-icon icon-name="lock" icon-size="brand" />
     <div class="info-text">
       <s-text text-size="18px" weight="700">
-        Bem vindo ao Secret File V0.3.5
+        Bem vindo ao Secret File V0.4
       </s-text>
       <s-text>
         Aqui você pode salvar senhas, lembretes, prints importantes, links e
