@@ -18,7 +18,6 @@ onBeforeMount(() => {
 const cloudFilesNotInLocal = computed(() => {
   const local = toRaw(filesInLocal.value);
   const cloud = toRaw(filesInCloud.value);
-  file.updateAllPasswords(local);
 
   return cloud.files?.filter(
     (cloudItem) =>
