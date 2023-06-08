@@ -27,9 +27,14 @@ function goTo() {
       const uid = userCredential.user.uid;
       const email = userCredential.user.email;
       const lastLogin = userCredential.user.metadata.lastLoginAt;
-      const userName = userCredential.user.displayName
+      const userName = userCredential.user.displayName;
       user
-        .saveUserData({ uuid: uid, email: email, lastLogin: lastLogin, userName: userName })
+        .saveUserData({
+          uuid: uid,
+          email: email,
+          lastLogin: lastLogin,
+          userName: userName,
+        })
         .then(() => {
           router.push("/home");
         });
@@ -44,7 +49,9 @@ function goTo() {
   <div class="login">
     <s-icon icon-name="lock" icon-size="brand" />
     <div class="info-text">
-      <s-text text-size="18px" weight="700"> Bem vindo ao Secret File </s-text>
+      <s-text text-size="18px" weight="700">
+        Bem vindo ao Secret File V0.3.5
+      </s-text>
       <s-text>
         Aqui você pode salvar senhas, lembretes, prints importantes, links e
         arquivos que só interessam a você
