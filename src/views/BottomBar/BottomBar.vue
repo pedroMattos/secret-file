@@ -18,13 +18,13 @@ async function addFile() {
   }
 }
 
-async function syncAll() {
-  const isValid = await checkIsValidUser();
+// async function syncAll() {
+//   const isValid = await checkIsValidUser();
 
-  if (isValid) {
-    emit("syncAll");
-  }
-}
+//   if (isValid) {
+//     emit("syncAll");
+//   }
+// }
 
 onBeforeMount(() => {
   file.hasUnSyncItems().then((count) => {
@@ -41,9 +41,9 @@ onBeforeMount(() => {
     <!-- <div @click="router.push('/user')" class="round">
       <s-icon icon-name="user" />
     </div> -->
-    <div v-if="countUnSync > 1" class="round sinc-all" @click="syncAll">
+    <!-- <div v-if="countUnSync > 1" class="round sinc-all" @click="syncAll">
       <s-icon icon-name="cloud" />
-    </div>
+    </div> -->
     <div class="round add-item" @click="addFile">
       <s-icon icon-name="circle-plus" />
     </div>
