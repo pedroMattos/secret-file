@@ -52,7 +52,7 @@ export async function add(fileData) {
     content: fileData.content,
     category: fileData.category,
     password,
-    encryptedPassword: true,
+    encryptedPassword: password ? true : false,
     uuid: userData.at(0).uuid,
     fileType: fileData.fileType,
     file: fileData.file,
