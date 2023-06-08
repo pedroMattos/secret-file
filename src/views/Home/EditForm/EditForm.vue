@@ -15,7 +15,7 @@ const state = reactive({
 });
 const emit = defineEmits(["cancel", "save"]);
 const fileName = ref(props.fileData.name);
-const content = ref(props.fileData.content);
+const content = ref(file.decryptToRead(props.fileData, "content"));
 const filePass = ref(props.fileData.password);
 const resetFile = ref(false);
 const items = ref([
@@ -25,7 +25,7 @@ const items = ref([
 ]);
 const category = ref(props.fileData.category);
 const lockState = ref(false);
-const fileUpload = ref(props.fileData.file);
+const fileUpload = ref(file.decryptToRead(props.fileData, "file"));
 const fileType = ref(props.fileData.fileType);
 const fileD = ref(null);
 const addFile = ref(false);
