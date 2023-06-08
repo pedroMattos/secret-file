@@ -1,6 +1,8 @@
 import { db } from "@/Dexie";
 import * as user from "./localUserData";
 import useEncryptData from '@/composables/useEcryptData'
+import useDecrypt from '@/composables/useDecrypt'
+import { toRaw } from "vue";
 
 export async function getData() {
   const userData = await user.getUserData();
@@ -111,4 +113,19 @@ export async function syncAll() {
     .forEach((file) => {
       update(file);
     });
+}
+
+export function protectContent(fileData) {
+  if (fileData.protected) return
+  fileData.content = useEncryptData(fileData.content)
+  if (fileData.file) fileData.file = useEncryptData(fileData.file)
+  return db.files.update(fileData.id, { ...fileData, inCloud: false, protected: true });
+}
+
+export function decryptToRead(fileData, attribute) {
+  const file = toRaw(fileData)
+  if (!file[attribute]) return null
+  if (file.protected) return useDecrypt(file[attribute])
+
+  return file[attribute]
 }

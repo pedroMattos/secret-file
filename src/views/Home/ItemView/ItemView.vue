@@ -4,6 +4,8 @@ import DeleteAction from "../FileActions/DeleteAction/DeleteAction.vue";
 import UnlockForm from "../UnlockForm/UnlockForm.vue";
 import CloudAction from "../FileActions/CloudAction/CloudAction.vue";
 import EditAction from "../FileActions/EditAction/EditAction.vue";
+import EncryptAction from "../FileActions/EncryptAction/EncryptAction.vue";
+import * as file from "@/models/services/localFile";
 import EditForm from "../EditForm/EditForm.vue";
 const blockedByPass = ref(true);
 const editing = ref(false);
@@ -50,6 +52,10 @@ function handleSaveOnCloud() {
         />
         <div v-else>
           <div class="actions">
+            <encrypt-action
+              @refetch="emit('refetch')"
+              :file-to-protect="props.itemData"
+            />
             <edit-action @start-edit="editing = true" />
             <delete-action
               @delete="emit('itemDeleted')"
@@ -62,12 +68,18 @@ function handleSaveOnCloud() {
           </div>
           <br />
           <s-text :is-link="fileContent()" :text="props.itemData.content">
-            {{ props.itemData.content }}
+            {{ file.decryptToRead(props.itemData, "content") }}
           </s-text>
-          <div v-if="itemData.fileType === 'pdf'" class="embed-container">
-            <iframe :src="itemData.file" frameborder="0"></iframe>
+
+          <div v-if="itemData.file">
+            <div v-if="itemData.fileType === 'pdf'" class="embed-container">
+              <iframe
+                :src="file.decryptToRead(props.itemData, 'file')"
+                frameborder="0"
+              ></iframe>
+            </div>
+            <img v-else :src="file.decryptToRead(props.itemData, 'file')" />
           </div>
-          <img v-else :src="itemData.file" />
         </div>
       </div>
     </div>
