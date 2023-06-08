@@ -3,18 +3,29 @@ import logout from "@/models/services/logout";
 import * as file from "@/models/services/localFile";
 import router from "@/router";
 import { defineEmits, onBeforeMount, ref } from "vue";
+import checkIsValidUser from "@/composables/checkIsValidUser";
 const emit = defineEmits(["add", "syncAll"]);
 const countUnSync = ref(0);
 async function handleLogout() {
   await logout();
   router.push("/");
 }
-function addFile() {
-  emit("add");
+async function addFile() {
+  const isValid = await checkIsValidUser();
+
+  if (isValid) {
+    emit("add");
+  }
 }
-function syncAll() {
-  emit("syncAll");
+
+async function syncAll() {
+  const isValid = await checkIsValidUser();
+
+  if (isValid) {
+    emit("syncAll");
+  }
 }
+
 onBeforeMount(() => {
   file.hasUnSyncItems().then((count) => {
     countUnSync.value = count;

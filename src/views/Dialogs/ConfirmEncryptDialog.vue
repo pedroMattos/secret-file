@@ -1,4 +1,5 @@
 <script setup>
+import checkIsValidUser from "@/composables/checkIsValidUser";
 import { ref, defineEmits, defineProps } from "vue";
 
 const emits = defineEmits(["confirm-encrypt"]);
@@ -7,9 +8,12 @@ const componentProps = defineProps({
 });
 
 const dialog = ref(false);
-function handleEncrypt() {
-  dialog.value = false;
-  emits("confirm-encrypt");
+async function handleEncrypt() {
+  const isValid = await checkIsValidUser();
+  if (isValid) {
+    dialog.value = false;
+    emits("confirm-encrypt");
+  }
 }
 </script>
 

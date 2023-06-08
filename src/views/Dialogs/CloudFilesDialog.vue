@@ -4,6 +4,7 @@ import { useStore } from "vuex";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog.vue";
 import * as local from "@/models/services/localFile";
 import * as cloud from "@/models/services/cloud";
+import checkIsValidUser from "@/composables/checkIsValidUser";
 
 const store = useStore();
 const emits = defineEmits(["refetch"]);
@@ -19,25 +20,41 @@ function handleClose() {
   dialog.value = false;
 }
 
-function handleDelete(itemId) {
-  cloud.deleteFile(itemId);
-  store.commit("refetchCloudItems", true);
+async function handleDelete(itemId) {
+  const isValid = await checkIsValidUser();
+  if (isValid) {
+    cloud.deleteFile(itemId);
+    store.commit("refetchCloudItems", true);
+  }
 }
 
-function createFile(cloudItem) {
-  const cloud = toRaw(cloudItem);
-  local.createFileByCloudFile(cloud).then(() => {
-    dialog.value = false;
-    store.commit("refetchCloudItems", true);
-    emits("refetch");
-  });
+async function createFile(cloudItem) {
+  const isValid = await checkIsValidUser();
+
+  if (isValid) {
+    const cloud = toRaw(cloudItem);
+    local.createFileByCloudFile(cloud).then(() => {
+      dialog.value = false;
+      store.commit("refetchCloudItems", true);
+      emits("refetch");
+    });
+  }
+}
+
+async function handleViewClick() {
+  await checkIsValidUser();
 }
 </script>
 
 <template>
   <v-dialog v-model="dialog" width="auto">
     <template v-slot:activator="{ props }">
-      <v-btn class="text-blue-lighten-5" v-bind="props" variant="text">
+      <v-btn
+        class="text-blue-lighten-5"
+        @click="handleViewClick"
+        v-bind="props"
+        variant="text"
+      >
         Visualizar
       </v-btn>
     </template>
