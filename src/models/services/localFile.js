@@ -89,7 +89,7 @@ export function updateAllAttributes(id, fileData) {
   if (!data.encryptedPassword) {
     data.password = useEncryptData(data.password)
   }
-  return db.files.update(id, { ...data, inCloud: false, encryptedPassword: true });
+  return db.files.update(id, { ...data, inCloud: false, encryptedPassword: data.password ? true : false });
 }
 
 export function addUuidIntoFile(id, uuid) {
